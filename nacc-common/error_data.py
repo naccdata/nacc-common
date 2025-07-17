@@ -37,8 +37,7 @@ def qc_data(file_object: FileOutput) -> Dict[str, Any]:
     return file_object.get("info", {}).get("qc", {})
 
 
-def validation_data(qc_object: Dict[str, Any],
-                    gear_name: str) -> Dict[str, Any]:
+def validation_data(qc_object: Dict[str, Any], gear_name: str) -> Dict[str, Any]:
     """Returns the validation object in the QC metadata for the named gear.
 
     Args:
@@ -58,12 +57,12 @@ def error_data(qc_object: Dict[str, Any], gear_name: str) -> Dict[str, Any]:
       the dictionary for gear_name.validation.data if exists.
       Otherwise, the empty dictionary.
     """
-    return validation_data(qc_object=qc_object,
-                           gear_name=gear_name).get("data", {})
+    return validation_data(qc_object=qc_object, gear_name=gear_name).get("data", {})
 
 
-def status_data(qc_object: Dict[str, Any],
-                gear_name: str) -> Optional[Literal["pass", "fail"]]:
+def status_data(
+    qc_object: Dict[str, Any], gear_name: str
+) -> Optional[Literal["pass", "fail"]]:
     """Returns the QC status in the QC metadata.
 
     Args:
@@ -72,8 +71,7 @@ def status_data(qc_object: Dict[str, Any],
     Returns:
       the QC status for the gear if set. None, otherwise.
     """
-    status = validation_data(qc_object=qc_object,
-                             gear_name=gear_name).get("state")
+    status = validation_data(qc_object=qc_object, gear_name=gear_name).get("state")
     if status is None:
         return None
     if status.lower() == "pass":
@@ -105,32 +103,37 @@ def build_error_rows(file_object: FileOutput) -> List[Dict[str, Any]]:
       file_object: the file dictionary
     """
 
-    def insert_error_row(qc_object: Dict[str, Any], gear_name: str,
-                         table: List[Dict[str, Any]]) -> None:
+    def insert_error_row(
+        qc_object: Dict[str, Any], gear_name: str, table: List[Dict[str, Any]]
+    ) -> None:
         for error in error_data(qc_object, gear_name):
             loc: Dict[str, Any] = error.pop("location", {})  # type: ignore
             if loc:
                 error.update(loc)  # type: ignore
-            table.append({
-                "name": file_object.name,
-                "id": file_object.id,
-                "gear": gear_name,
-                **error,
-            })
+            table.append(
+                {
+                    "name": file_object.name,
+                    "id": file_object.id,
+                    "gear": gear_name,
+                    **error,
+                }
+            )
 
     return build_qc_rows(file_object, insert_error_row)
 
 
 def build_status_rows(file_object: FileOutput) -> List[Dict[str, Any]]:
-
-    def insert_status_row(qc_object: Dict[str, Any], gear_name: str,
-                          table: List[Dict[str, Any]]) -> None:
-        table.append({
-            "name": file_object.name,
-            "id": file_object.id,
-            "gear": gear_name,
-            "status": status_data(qc_object, gear_name),
-        })
+    def insert_status_row(
+        qc_object: Dict[str, Any], gear_name: str, table: List[Dict[str, Any]]
+    ) -> None:
+        table.append(
+            {
+                "name": file_object.name,
+                "id": file_object.id,
+                "gear": gear_name,
+                "status": status_data(qc_object, gear_name),
+            }
+        )
 
     return build_qc_rows(file_object, insert_status_row)
 
@@ -140,10 +143,13 @@ def get_qc_data(
 ) -> List[Dict[str, Any]]:
     project_object: Project = project.reload()
     return [
-        item for sl in [
-            row_builder(file) for file in project_object.files
+        item
+        for sl in [
+            row_builder(file)
+            for file in project_object.files
             if file.info.get("qc", None)
-        ] for item in sl
+        ]
+        for item in sl
     ]
 
 
