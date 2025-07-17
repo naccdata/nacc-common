@@ -106,7 +106,7 @@ def build_error_rows(file_object: FileOutput) -> List[Dict[str, Any]]:
     def insert_error_row(
         qc_object: Dict[str, Any], gear_name: str, table: List[Dict[str, Any]]
     ) -> None:
-        for error in error_data(qc_object, gear_name):
+        for error in error_data(qc_object, gear_name).values():
             loc: Dict[str, Any] = error.pop("location", {})  # type: ignore
             if loc:
                 error.update(loc)  # type: ignore
