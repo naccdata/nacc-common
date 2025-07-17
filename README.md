@@ -87,10 +87,13 @@ pip3 install nacc_common-<version>-py3-none-any.whl
 4. Create and push the release tag
 
    ```bash
-   export VERSION="v<current-version>"
+   export VERSION=v<current-version>
    git tag -a "$VERSION" -m "Data Platform demos $VERSION"
    git push --tags
    ```
+
+   The `<current-version>` should use semantic versioning.
+   For instance, it should have the form 1.1.1, meaning the tag will look like `v1.1.1`.
 
    The build GitHub action will create a new release with the tag as the version number.
 
