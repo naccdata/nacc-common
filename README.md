@@ -14,7 +14,7 @@ You can use the release directly by referencing the release files in your packag
 For instance, adding the following line to `requirements.txt` for use with pip
 
 ```text
-nacc-common@ https://github.com/naccdata/nacc-common/releases/download/v1.1.1/nacc_common-1.1.1-py3-none-any.whl
+nacc-common@ https://github.com/naccdata/nacc-common/releases/download/v1.1.2/nacc_common-1.1.2-py3-none-any.whl
 ```
 
 will include the 1.1.1 release of the package (as a wheel distribution) as a dependency.
@@ -93,7 +93,7 @@ pip3 install nacc_common-<version>-py3-none-any.whl
    ```
 
    The `<current-version>` should use semantic versioning.
-   For instance, it should have the form 1.1.1, meaning the tag will look like `v1.1.1`.
+   For instance, it should have the form 1.1.1, meaning the tag will look like `v1.1.2`.
 
    The build GitHub action will create a new release with the tag as the version number.
 

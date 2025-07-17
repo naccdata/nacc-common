@@ -34,8 +34,8 @@ jobs:
       run: echo "VER=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     - name: Reset version to match github tag
       run: |
-        sed -i 's|version=.*|version="'$VER'",|g' nacc-common/BUILD
-        cat nacc-common/BUILD
+        sed -i 's|version=.*|version="'$VER'",|g' nacc_common/BUILD
+        cat nacc_common/BUILD
     - name: Lint
       run: |
         pants lint ::
