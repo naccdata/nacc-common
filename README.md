@@ -88,7 +88,7 @@ pip3 install nacc_common-<version>-py3-none-any.whl
 
    ```bash
    export VERSION=v<current-version>
-   git tag -a "$VERSION" -m "Data Platform demos $VERSION"
+   git tag -a "$VERSION" -m "NACC Common Package $VERSION"
    git push --tags
    ```
 
