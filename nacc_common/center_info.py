@@ -1,6 +1,5 @@
 """Utilities for getting center information from NACC Data Platform."""
 
-
 from flywheel import Client
 
 

@@ -1,6 +1,6 @@
 from flywheel import Client as Client
 
-def get_center_id(client: Client, adcid: str) -> str | None:
+def get_center_id(client: Client, adcid: str) -> str:
     """Look up the center group ID for a given ADCID.
 
     Args:
