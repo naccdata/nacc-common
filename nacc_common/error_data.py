@@ -82,16 +82,16 @@ def status_data(
     return None
 
 
-def build_qc_rows(
+def build_qc_info_list(
     file_object: FileOutput,
-    insert_row: Callable[[Dict[str, Any], str, List[Dict[str, Any]]], None],
+    insert_info: Callable[[Dict[str, Any], str, List[Dict[str, Any]]], None],
 ) -> List[Dict[str, Any]]:
     """Build dictionaries for output of QC data for the file using the insert
     function.
 
     Args:
       file_object: the FW file
-      insert_row: the QC data insert function
+      insert_info: the QC data insert function
     Returns:
       A list of dictionaries for each object in the QC data for the file
     """
@@ -99,7 +99,7 @@ def build_qc_rows(
     gear_names = set(qc_object.keys())
     table: List[Dict[str, Any]] = []
     for gear_name in gear_names:
-        insert_row(qc_object, gear_name, table)
+        insert_info(qc_object, gear_name, table)
     return table
 
 
@@ -135,8 +135,9 @@ def get_error_data(project: Project) -> List[Dict[str, Any]]:
       project: the flywheel project object
     """
 
-    def build_error_rows(file_object: FileOutput) -> List[Dict[str, Any]]:
-        """Builds a list of error table rows from the file dictionary object.
+    def build_error_info_list(file_object: FileOutput) -> List[Dict[str, Any]]:
+        """Builds a list of error table information from the file dictionary
+        object.
 
         Flattens in gear name, and error locations.
 
@@ -144,7 +145,7 @@ def get_error_data(project: Project) -> List[Dict[str, Any]]:
         file_object: the file dictionary
         """
 
-        def insert_error_row(
+        def insert_error_info(
             qc_object: Dict[str, Any], gear_name: str, table: List[Dict[str, Any]]
         ) -> None:
             for error in error_data(qc_object, gear_name).values():
@@ -160,9 +161,9 @@ def get_error_data(project: Project) -> List[Dict[str, Any]]:
                     }
                 )
 
-        return build_qc_rows(file_object, insert_error_row)
+        return build_qc_info_list(file_object, insert_error_info)
 
-    return get_qc_data(project, build_error_rows)
+    return get_qc_data(project, build_error_info_list)
 
 
 def get_status_data(project: Project) -> List[Dict[str, Any]]:
@@ -203,6 +204,6 @@ def get_status_data(project: Project) -> List[Dict[str, Any]]:
                 }
             )
 
-        return build_qc_rows(file_object, insert_status_info)
+        return build_qc_info_list(file_object, insert_status_info)
 
     return get_qc_data(project, build_status_info_list)
