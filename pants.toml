@@ -19,7 +19,7 @@ pants_ignore = [
 root_patterns = ["/"]
 
 [python]
-interpreter_constraints = ["==3.12.*"]
+interpreter_constraints = ["==3.11.*"]
 enable_resolves = true
 resolves = { python-default = "python-default.lock"}
 
