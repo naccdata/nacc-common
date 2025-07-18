@@ -1,9 +1,7 @@
-"""Implements utilities for data pipelines in NACC Data Platform."""
-
 from typing import Literal
 
-from flywheel import Client, Project
-
+from flywheel import Client as Client
+from flywheel import Project as Project
 
 def get_project(
     client: Client,
@@ -22,18 +20,9 @@ def get_project(
     Returns:
         Project: The project for the given center, study, and datatype.
     """
-    suffix = f"-{study_id}" if study_id != "adrc" else ""
-    project_label = f"{pipeline_type}-{datatype}{suffix}"
-    project = client.lookup(f"{group_id}/{project_label}")
-    if not project:
-        raise PipelineProjectError(f"Failed to find project {project_label}")
-
-    return project
-
 
 class PipelineProjectError(Exception):
     """Error for missing pipeline project."""
-
 
 def get_published_view(client: Client, label: str) -> str:
     """Return the view ID for the published dataview.
@@ -44,6 +33,3 @@ def get_published_view(client: Client, label: str) -> str:
     Returns:
       the ID for the dataview
     """
-    metadata_project = client.lookup("nacc/metadata")
-    views = client.get_views(metadata_project.id, filter=f"label={label}")
-    return views[0].id
