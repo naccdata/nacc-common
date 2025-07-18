@@ -1,11 +1,8 @@
 """Utilities for getting center information from NACC Data Platform."""
 
-import logging
 from typing import Optional
 
 from flywheel import Client
-
-log = logging.getLogger("__main__")
 
 
 def get_center_id(client: Client, adcid: str) -> Optional[str]:
@@ -16,17 +13,21 @@ def get_center_id(client: Client, adcid: str) -> Optional[str]:
 
     Returns:
         Optional[str]: The group ID of the center, or None if not found.
+    Raises:
+        CenterError if no center data is found or no center with ID exists
     """
     metadata = client.lookup("nacc/metadata")
     if not metadata:
-        log.error("Failed to find nacc/metadata project")
+        raise CenterError("Failed to find nacc/metadata project")
     metadata = metadata.reload()
     if "centers" not in metadata.info:
-        log.error("No 'centers' key in nacc/metadata")
-        return None
+        raise CenterError("No 'centers' key in nacc/metadata")
 
     if adcid not in metadata.info["centers"]:
-        log.error("No center with ADCID %s in nacc/metadata", adcid)
-        return None
+        raise CenterError(f"No center with ADCID {adcid} in nacc/metadata")
 
     return metadata.info["centers"][str(adcid)]["group"]
+
+
+class CenterError(Exception):
+    """Error for accessing center information."""

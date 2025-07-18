@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, List, Literal, Optional
 
 from flywheel import FileOutput, Project
 
-ERROR_HEADER_NAMES = [
+ERROR_HEADER_NAMES: List[str] = [
     "type",
     "ptid",
     "visitnum",
@@ -23,7 +23,7 @@ ERROR_HEADER_NAMES = [
     "timestamp",
 ]
 
-STATUS_HEADER_NAMES = ["name", "id", "gear", "status"]
+STATUS_HEADER_NAMES: List[str] = ["name", "id", "gear", "status"]
 
 
 def qc_data(file_object: FileOutput) -> Dict[str, Any]:
@@ -82,70 +82,44 @@ def status_data(
     return None
 
 
-def build_qc_rows(
+def build_qc_info_list(
     file_object: FileOutput,
-    insert_row: Callable[[Dict[str, Any], str, List[Dict[str, Any]]], None],
+    insert_info: Callable[[Dict[str, Any], str, List[Dict[str, Any]]], None],
 ) -> List[Dict[str, Any]]:
+    """Build dictionaries for output of QC data for the file using the insert
+    function.
+
+    Args:
+      file_object: the FW file
+      insert_info: the QC data insert function
+    Returns:
+      A list of dictionaries for each object in the QC data for the file
+    """
     qc_object = qc_data(file_object)
     gear_names = set(qc_object.keys())
     table: List[Dict[str, Any]] = []
     for gear_name in gear_names:
-        insert_row(qc_object, gear_name, table)
+        insert_info(qc_object, gear_name, table)
     return table
 
 
-def build_error_rows(file_object: FileOutput) -> List[Dict[str, Any]]:
-    """Builds a list of error table rows from the file dictionary object.
-
-    Flattens in gear name, and error locations.
+def get_qc_data(
+    project: Project, info_builder: Callable[[FileOutput], List[Dict[str, Any]]]
+) -> List[Dict[str, Any]]:
+    """Helper function to create list of dictionaries created by the info
+    builder function applied to files in the project.
 
     Args:
-      file_object: the file dictionary
+      project: the project
+      info_builder: function to create list of QC information
+    Returns:
+      List of QC information dictionaries for files in the project
     """
-
-    def insert_error_row(
-        qc_object: Dict[str, Any], gear_name: str, table: List[Dict[str, Any]]
-    ) -> None:
-        for error in error_data(qc_object, gear_name).values():
-            loc: Dict[str, Any] = error.pop("location", {})  # type: ignore
-            if loc:
-                error.update(loc)  # type: ignore
-            table.append(
-                {
-                    "name": file_object.name,
-                    "id": file_object.id,
-                    "gear": gear_name,
-                    **error,
-                }
-            )
-
-    return build_qc_rows(file_object, insert_error_row)
-
-
-def build_status_rows(file_object: FileOutput) -> List[Dict[str, Any]]:
-    def insert_status_row(
-        qc_object: Dict[str, Any], gear_name: str, table: List[Dict[str, Any]]
-    ) -> None:
-        table.append(
-            {
-                "name": file_object.name,
-                "id": file_object.id,
-                "gear": gear_name,
-                "status": status_data(qc_object, gear_name),
-            }
-        )
-
-    return build_qc_rows(file_object, insert_status_row)
-
-
-def get_qc_data(
-    project: Project, row_builder: Callable[[FileOutput], List[Dict[str, Any]]]
-) -> List[Dict[str, Any]]:
     project_object: Project = project.reload()
     return [
         item
         for sl in [
-            row_builder(file)
+            info_builder(file)
             for file in project_object.files
             if file.info.get("qc", None)
         ]
@@ -160,8 +134,76 @@ def get_error_data(project: Project) -> List[Dict[str, Any]]:
     Args:
       project: the flywheel project object
     """
-    return get_qc_data(project, build_error_rows)
+
+    def build_error_info_list(file_object: FileOutput) -> List[Dict[str, Any]]:
+        """Builds a list of error table information from the file dictionary
+        object.
+
+        Flattens in gear name, and error locations.
+
+        Args:
+        file_object: the file dictionary
+        """
+
+        def insert_error_info(
+            qc_object: Dict[str, Any], gear_name: str, table: List[Dict[str, Any]]
+        ) -> None:
+            for error in error_data(qc_object, gear_name).values():
+                loc: Dict[str, Any] = error.pop("location", {})  # type: ignore
+                if loc:
+                    error.update(loc)  # type: ignore
+                table.append(
+                    {
+                        "name": file_object.name,
+                        "id": file_object.id,
+                        "gear": gear_name,
+                        **error,
+                    }
+                )
+
+        return build_qc_info_list(file_object, insert_error_info)
+
+    return get_qc_data(project, build_error_info_list)
 
 
 def get_status_data(project: Project) -> List[Dict[str, Any]]:
-    return get_qc_data(project, build_status_rows)
+    """Returns a list of dictionaries containing QC status data for files in
+    the project.
+
+    Args:
+      project: the project
+    Returns:
+      a list of containing status info objects for files in the project
+    """
+
+    def build_status_info_list(file_object: FileOutput) -> List[Dict[str, Any]]:
+        """Returns a list of dictionaries containg QC status data for the file.
+
+        Args:
+          file_object: the FW file
+        Returns:
+          the list of QC status objects
+        """
+
+        def insert_status_info(
+            qc_object: Dict[str, Any], gear_name: str, table: List[Dict[str, Any]]
+        ) -> None:
+            """Inserts the QC status info in to the list.
+
+            Args:
+              qc_object: the QC object from FW
+              gear_name: the name of the gear generating error
+              table: the list to insert into
+            """
+            table.append(
+                {
+                    "name": file_object.name,
+                    "id": file_object.id,
+                    "gear": gear_name,
+                    "status": status_data(qc_object, gear_name),
+                }
+            )
+
+        return build_qc_info_list(file_object, insert_status_info)
+
+    return get_qc_data(project, build_status_info_list)
