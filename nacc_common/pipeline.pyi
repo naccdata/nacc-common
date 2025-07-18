@@ -1,15 +1,7 @@
+from flywheel import Client as Client, Project as Project
 from typing import Literal
 
-from flywheel import Client as Client
-from flywheel import Project as Project
-
-def get_project(
-    client: Client,
-    group_id: str,
-    datatype: Literal["form", "enrollment", "dicom"] = "form",
-    pipeline_type: Literal["ingest", "sandbox"] = "sandbox",
-    study_id: str = "adrc",
-) -> Project:
+def get_project(client: Client, group_id: str, datatype: Literal['form', 'enrollment', 'dicom'] = 'form', pipeline_type: Literal['ingest', 'sandbox'] = 'sandbox', study_id: str = 'adrc') -> Project:
     """Look up the project for a given center, study, and datatype.
 
     Args:
