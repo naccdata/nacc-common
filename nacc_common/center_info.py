@@ -1,11 +1,10 @@
 """Utilities for getting center information from NACC Data Platform."""
 
-from typing import Optional
 
 from flywheel import Client
 
 
-def get_center_id(client: Client, adcid: str) -> Optional[str]:
+def get_center_id(client: Client, adcid: str) -> str:
     """Look up the center group ID for a given ADCID.
 
     Args:
