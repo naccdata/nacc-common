@@ -11,7 +11,7 @@ Distributions can be accessed via each [release](https://github.com/naccdata/nac
 ## Using the package
 
 You can use the release directly by referencing the release files in your package manager.
-For instance, adding the following line to `requirements.txt` for use with pip
+For instance, adding the following line to `requirements.txt` for use with [pip](https://pip.pypa.io/en/stable/topics/vcs-support/#git)
 
 ```text
 nacc-common@ https://github.com/naccdata/nacc-common/releases/download/v1.1.2/nacc_common-1.1.2-py3-none-any.whl
