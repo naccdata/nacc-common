@@ -93,7 +93,7 @@ pip3 install nacc_common-<version>-py3-none-any.whl
    ```
 
    The `<current-version>` should use semantic versioning.
-   For instance, it should have the form 1.1.1, meaning the tag will look like `v1.1.2`.
+   For instance, it should have the form 1.1.2, meaning the tag will look like `v1.1.2`.
 
    The build GitHub action will create a new release with the tag as the version number.
 
