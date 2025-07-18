@@ -40,22 +40,6 @@ The repo has a VSCode devcontainer configuration that ensures a compatible Pytho
 You need [Docker](https://www.docker.com) installed, and [VSCode](https://code.visualstudio.com) with Dev Containers enabled.
 For this follow the [Dev Containers tutorial](https://code.visualstudio.com/docs/devcontainers/tutorial) to the point of "Check Installation".
 
-### Updating type stubs
-
-The directory includes `.pyi` files for inclusion in the package.
-These need to be regenerated if the signatures of any functions are changed in the `.py` files.
-
-This uses the mypy `stubgen` command that should be available in the devcontainer.
-
-We start by removing the existing `nacc_common/*.pyi` files.
-Otherwise, stubgen adds an unnecessary `nacc_common.pyi` file at the top-level. 
-
-```bash
-rm nacc_common/*.pyi
-stubgen -o . --include-docstrings nacc_common
-pants fix ::
-```
-
 ### Building a distribution
 
 Once pants is installed, the command 
