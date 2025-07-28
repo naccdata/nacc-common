@@ -48,7 +48,7 @@ def validation_data(qc_object: Dict[str, Any], gear_name: str) -> Dict[str, Any]
 
 
 def error_data(qc_object: Dict[str, Any], gear_name: str) -> Dict[str, Any]:
-    """Returns the error object in the QC metadata.
+    """Returns the error object in the QC metadata if the status is not "pass".
 
     Args:
       qc_object: the QC metadata (file.info.qc)
@@ -57,7 +57,12 @@ def error_data(qc_object: Dict[str, Any], gear_name: str) -> Dict[str, Any]:
       the dictionary for gear_name.validation.data if exists.
       Otherwise, the empty dictionary.
     """
-    return validation_data(qc_object=qc_object, gear_name=gear_name).get("data", {})
+    validation_object = validation_data(qc_object=qc_object, gear_name=gear_name)
+    status = validation_object.get("state")
+    if status is not None and status.lower() == "pass":
+        return {}
+
+    return validation_object.get("data", {})
 
 
 def status_data(
