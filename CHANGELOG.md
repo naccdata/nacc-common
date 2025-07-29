@@ -2,7 +2,11 @@
 
 Documentation of release versions of the `nacc-common` package.
 
-# v1.2.1
+# v1.2.5
+
+* Fixes use of error_data which returns a list of error objects.
+  
+# v1.2.4
 
 * Fixes an issue where error data is returned for approved alerts, by only returning data when status is not pass.
 
