@@ -2,6 +2,11 @@
 
 Documentation of release versions of the `nacc-common` package.
 
+# v2.0.0
+
+* Move code to flywheel-gear-extensions repository.
+* Only use this repository to publish packages for consistency.
+
 # v1.2.5
 
 * Fixes use of error_data which returns a list of error objects.
