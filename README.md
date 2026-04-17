@@ -13,10 +13,10 @@ You can use the release directly by referencing the release files in your packag
 For instance, adding the following line to `requirements.txt` for use with [pip](https://pip.pypa.io/en/stable/topics/vcs-support/#git)
 
 ```text
-nacc-common@ https://github.com/naccdata/nacc-common/releases/download/v2.0.0/nacc_common-2.0.0-py3-none-any.whl
+nacc-common@ https://github.com/naccdata/nacc-common/releases/download/v3.1.0/nacc_common-3.1.0-py3-none-any.whl
 ```
 
-will include the 2.0.0 release of the package (as a wheel distribution) as a dependency.
+will include the 3.1.0 release of the package (as a wheel distribution) as a dependency.
 The format of the URL stays consistent, so to use a newer version of the package replace the version number.
 
 Most package managers use a similar format to add packages directly from GitHub.
